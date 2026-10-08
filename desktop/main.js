@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog, shell } = require('electron');
+const { app, BrowserWindow, dialog, shell, ipcMain } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
@@ -9,6 +9,7 @@ let backend;
 let logDir;
 let mainWindow;
 let splashWindow;
+let updateDownloaded = false;
 
 const molarRoot = process.env.APPDATA ? path.join(process.env.APPDATA, 'Molar') : path.join(app.getPath('userData'), 'Molar');
 fs.mkdirSync(path.join(molarRoot, 'desktop'), { recursive: true });
@@ -61,7 +62,7 @@ function createWindow() {
   mainWindow.on('closed', () => { mainWindow = null; });
 }
 
-function sendUpdaterStatus(status, message, progress) { if (mainWindow && !mainWindow.isDestroyed() && mainWindow.webContents) mainWindow.webContents.send('updater-status', { status, message, progress }); }
+function sendUpdaterStatus(status, message, progress, version) { if (mainWindow && !mainWindow.isDestroyed() && mainWindow.webContents) mainWindow.webContents.send('updater-status', { status, message, progress, currentVersion: app.getVersion(), availableVersion: version || null }); }
 
 function configureAutoUpdater() {
   if (!app.isPackaged) return;
@@ -69,17 +70,16 @@ function configureAutoUpdater() {
   if (isBeta) { autoUpdater.channel = app.getVersion().includes('-alpha') ? 'alpha' : 'beta'; autoUpdater.allowPrerelease = true; }
   autoUpdater.autoDownload = true;
   autoUpdater.on('checking-for-update', () => sendUpdaterStatus('checking', 'Buscando actualizaciones…'));
-  autoUpdater.on('update-available', info => sendUpdaterStatus('downloading', `Descargando Molar ${info.version} en segundo plano…`));
+  autoUpdater.on('update-available', info => sendUpdaterStatus('downloading', `Descargando Molar ${info.version} en segundo plano…`, 0, info.version));
   autoUpdater.on('download-progress', progress => sendUpdaterStatus('downloading', `Descargando actualización: ${Math.round(progress.percent)}%`, progress.percent));
   autoUpdater.on('update-not-available', () => sendUpdaterStatus('current', 'Molar está actualizado.'));
   mainWindow.webContents.on('did-finish-load', () => sendUpdaterStatus('checking', 'Buscando actualizaciones…'));
   autoUpdater.autoInstallOnAppQuit = true;
   autoUpdater.on('error', error => { sendUpdaterStatus('error', 'No se pudo verificar la actualización. Molar seguirá funcionando.'); fs.appendFileSync(path.join(logDir, 'updater.log'), `\n${new Date().toISOString()} ${error.stack || error.message}\n`); });
-  autoUpdater.on('update-downloaded', async () => {
-    sendUpdaterStatus('ready', 'Actualización lista para instalar.');
-    const result = await dialog.showMessageBox({ type: 'info', title: 'Actualización lista', message: `Molar ${autoUpdater.currentVersion.version} descargó una actualización.`, detail: 'Podés reiniciar ahora o continuar trabajando. Si elegís “Más tarde”, se instalará automáticamente al cerrar Molar.', buttons: ['Reiniciar ahora', 'Más tarde'], defaultId: 0 });
-    if (result.response === 0) autoUpdater.quitAndInstall();
-  });
+  autoUpdater.on('update-downloaded', info => { updateDownloaded = true; sendUpdaterStatus('ready', `Molar ${info.version} está listo para instalar.`, 100, info.version); });
+  ipcMain.handle('updater:check', async () => { if (!app.isPackaged) return { status: 'development', message: 'Actualizaciones disponibles en la versión instalada.' }; try { await autoUpdater.checkForUpdates(); return { status: updateDownloaded ? 'ready' : 'checking' }; } catch (_) { return { status: 'error', message: 'No se pudo verificar la actualización.' }; } });
+  ipcMain.handle('updater:install', () => { if (updateDownloaded) autoUpdater.quitAndInstall(); return updateDownloaded; });
+  setInterval(() => { if (!updateDownloaded) autoUpdater.checkForUpdates().catch(() => {}); }, 10 * 60 * 1000);
   autoUpdater.checkForUpdatesAndNotify();
 }
 
