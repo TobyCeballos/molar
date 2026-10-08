@@ -147,6 +147,17 @@ html,body,#root{height:100%;min-height:0}
   .tooth-form label{display:grid;grid-template-columns:1fr;gap:5px;align-items:stretch}
 }
 
+/* Odontograma compacto y legible: piezas algo más pequeñas, etiquetas más visibles. */
+.tooth{min-height:64px}
+.tooth-face{width:48px;height:48px}
+.tooth strong{font-size:14px;line-height:1.1}
+.tooth small{font-size:9px;line-height:1.15;max-width:100%;padding:2px 5px;border-radius:999px}
+@media(max-width:900px){
+  .tooth-face{width:42px;height:42px}
+  .tooth strong{font-size:13px}
+  .tooth small{font-size:8px}
+}
+
 /* Identidad visual Molar */
 :root{
   --molar-primary:#2D6BFF;
