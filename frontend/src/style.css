@@ -131,6 +131,22 @@ html,body,#root{height:100%;min-height:0}
   .settings-card button{width:100%;margin:6px 0}.settings-card button+button{margin-left:0}
 }
 
+/* Superficies en grilla: nombre, estado y observación quedan en una misma fila. */
+.tooth-form label{
+  display:grid;
+  grid-template-columns:minmax(150px,.55fr) minmax(180px,1fr) minmax(240px,1.45fr);
+  gap:10px;
+  align-items:center;
+  margin:8px 0;
+}
+.tooth-form label>select,.tooth-form label>.surface-observation{width:100%;margin:0!important}
+@media(max-width:900px) and (min-width:681px){
+  .tooth-form label{grid-template-columns:minmax(120px,.6fr) minmax(150px,1fr) minmax(180px,1.4fr)}
+}
+@media(max-width:680px){
+  .tooth-form label{display:grid;grid-template-columns:1fr;gap:5px;align-items:stretch}
+}
+
 /* Identidad visual Molar */
 :root{
   --molar-primary:#2D6BFF;
