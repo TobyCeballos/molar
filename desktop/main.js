@@ -40,21 +40,29 @@ function createSplash() {
 function closeSplash() { if (splashWindow && !splashWindow.isDestroyed()) splashWindow.close(); }
 
 function createWindow() {
-  mainWindow = new BrowserWindow({ icon: path.join(process.resourcesPath, 'molar.ico'), width: 1280, height: 800, show: false, fullscreen: false, autoHideMenuBar: true, webPreferences: { contextIsolation: true } });
+  mainWindow = new BrowserWindow({ icon: path.join(process.resourcesPath, 'molar.ico'), width: 1280, height: 800, show: false, fullscreen: false, autoHideMenuBar: true, webPreferences: { contextIsolation: true, preload: path.join(__dirname, 'preload.js') } });
   mainWindow.webContents.setWindowOpenHandler(({ url }) => { if (url.startsWith('https://wa.me/')) shell.openExternal(url); return { action: 'deny' }; });
   mainWindow.loadFile(path.join(process.resourcesPath, 'frontend', 'dist', 'index.html'), { query: { version: app.getVersion() } });
   mainWindow.once('ready-to-show', () => { mainWindow.maximize(); closeSplash(); mainWindow.show(); });
   mainWindow.on('closed', () => { mainWindow = null; });
 }
 
+function sendUpdaterStatus(status, message, progress) { if (mainWindow && !mainWindow.isDestroyed() && mainWindow.webContents) mainWindow.webContents.send('updater-status', { status, message, progress }); }
+
 function configureAutoUpdater() {
   if (!app.isPackaged) return;
   const isBeta = app.getVersion().includes('-beta') || app.getVersion().includes('-alpha');
   if (isBeta) { autoUpdater.channel = app.getVersion().includes('-alpha') ? 'alpha' : 'beta'; autoUpdater.allowPrerelease = true; }
   autoUpdater.autoDownload = true;
+  autoUpdater.on('checking-for-update', () => sendUpdaterStatus('checking', 'Buscando actualizaciones…'));
+  autoUpdater.on('update-available', info => sendUpdaterStatus('downloading', `Descargando Molar ${info.version} en segundo plano…`));
+  autoUpdater.on('download-progress', progress => sendUpdaterStatus('downloading', `Descargando actualización: ${Math.round(progress.percent)}%`, progress.percent));
+  autoUpdater.on('update-not-available', () => sendUpdaterStatus('current', 'Molar está actualizado.'));
+  mainWindow.webContents.on('did-finish-load', () => sendUpdaterStatus('checking', 'Buscando actualizaciones…'));
   autoUpdater.autoInstallOnAppQuit = true;
-  autoUpdater.on('error', error => fs.appendFileSync(path.join(logDir, 'updater.log'), `\n${new Date().toISOString()} ${error.stack || error.message}\n`));
+  autoUpdater.on('error', error => { sendUpdaterStatus('error', 'No se pudo verificar la actualización. Molar seguirá funcionando.'); fs.appendFileSync(path.join(logDir, 'updater.log'), `\n${new Date().toISOString()} ${error.stack || error.message}\n`); });
   autoUpdater.on('update-downloaded', async () => {
+    sendUpdaterStatus('ready', 'Actualización lista para instalar.');
     const result = await dialog.showMessageBox({ type: 'info', title: 'Actualización lista', message: `Molar ${autoUpdater.currentVersion.version} descargó una actualización.`, detail: 'Podés reiniciar ahora o continuar trabajando. Si elegís “Más tarde”, se instalará automáticamente al cerrar Molar.', buttons: ['Reiniciar ahora', 'Más tarde'], defaultId: 0 });
     if (result.response === 0) autoUpdater.quitAndInstall();
   });

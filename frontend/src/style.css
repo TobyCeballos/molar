@@ -86,6 +86,51 @@
 .tooth-form label{padding:10px 12px;border:1px solid #e3eceb;border-radius:9px;background:#fbfdfd}
 @media(max-width:900px){.tooth-grid{grid-template-columns:repeat(8,minmax(42px,1fr));padding:16px 8px 22px}.history-heading:has(+ .tooth-grid){align-items:flex-start;gap:8px;flex-direction:column}}
 
+.update-status{min-height:20px;margin:14px 0 4px;text-align:center;color:var(--molar-muted);font-size:12px}
+
+/* Layout responsive: navegación fija y contenido con scroll independiente */
+html,body,#root{height:100%;min-height:0}
+.layout{height:100vh;min-height:0;overflow:hidden;display:flex}
+.layout aside{height:100vh;min-height:0;flex:0 0 248px;overflow-y:auto;overflow-x:hidden}
+.layout .content{height:100vh;min-width:0;min-height:0;width:100%;max-width:none;overflow-y:auto;overflow-x:hidden;padding:38px clamp(22px,6vw,96px) 56px}
+.content>header,.content>div,.content>form,.content>.calendar,.content>.history,.content>.settings{width:100%;max-width:1400px;margin-left:auto;margin-right:auto}
+.content>.history,.content>.settings{max-width:1400px}
+.tooth-form{width:100%!important;max-width:none!important}
+.tooth-grid{width:100%;max-width:none!important}
+.history-list,.patient-summary,.odontogram-history{max-width:none!important;width:100%}
+.settings-card{width:100%!important;max-width:none}
+.toolbar{width:100%;max-width:none}
+.list{width:100%}
+@media(max-width:900px){
+  .layout aside{flex-basis:210px}
+  .layout .content{padding-left:24px;padding-right:24px}
+  .tooth-grid{grid-template-columns:repeat(16,minmax(32px,1fr));column-gap:3px;padding-left:8px;padding-right:8px}
+  .tooth-face{width:44px;height:44px}
+}
+@media(max-width:680px){
+  .layout{display:block;overflow:hidden}
+  .layout aside{height:auto;max-height:145px;width:100%;padding:12px 14px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;overflow:hidden;align-items:center}
+  .layout aside .brand-logo{grid-column:1/-1;width:104px;height:48px;margin:0 auto 4px}
+  .layout aside button{padding:8px 4px;text-align:center;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .layout aside .user,.layout aside button:last-child{display:none}
+  .layout .content{height:calc(100vh - 145px);padding:24px 14px 42px}
+  header h1{font-size:26px}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .stats div{min-width:0;padding:18px 16px}
+  .toolbar{flex-direction:column}.toolbar input{width:100%}
+  .row,.tenant-head,.tenant-actions,.installation{align-items:flex-start;gap:10px;flex-direction:column}
+  .appointment-actions{width:100%;flex-wrap:wrap}
+  .patient-form{width:100%!important;max-width:none!important}
+  .patient-full-form input{width:100%;margin-right:0}
+  .patient-summary{flex-direction:column}
+  .history-heading{align-items:flex-start;gap:10px;flex-direction:column}
+  .tooth-grid{grid-template-columns:repeat(8,minmax(30px,1fr));column-gap:2px;row-gap:16px;padding:14px 4px 20px}
+  .tooth{min-height:72px}.tooth-face{width:38px;height:38px}.tooth strong{font-size:11px}.tooth small{font-size:7px;max-width:58px}
+  .tooth:nth-child(17),.tooth:nth-child(27){grid-column-start:2}.tooth:nth-child(37){grid-column-start:1}
+  .tooth-form label{width:100%}
+  .settings-card button{width:100%;margin:6px 0}.settings-card button+button{margin-left:0}
+}
+
 /* Identidad visual Molar */
 :root{
   --molar-primary:#2D6BFF;
