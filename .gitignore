@@ -1,0 +1,10 @@
+backend/target/
+frontend/node_modules/
+frontend/dist/
+desktop/node_modules/
+/molar-control/
+*.db
+*.db-shm
+*.db-wal
+.idea/
+.vscode/

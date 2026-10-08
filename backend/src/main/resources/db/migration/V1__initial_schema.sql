@@ -1,0 +1,6 @@
+CREATE TABLE app_user (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL, display_name TEXT NOT NULL, role TEXT NOT NULL, created_at TEXT NOT NULL);
+CREATE TABLE patient (id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, dni TEXT, birth_date TEXT, phone TEXT, email TEXT, address TEXT, insurance TEXT, emergency_contact TEXT, notes TEXT, active INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE TABLE clinical_entry (id INTEGER PRIMARY KEY AUTOINCREMENT, patient_id INTEGER NOT NULL, entry_date TEXT NOT NULL, reason TEXT, diagnosis TEXT, treatment TEXT, notes TEXT, professional TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, FOREIGN KEY(patient_id) REFERENCES patient(id));
+CREATE TABLE appointment (id INTEGER PRIMARY KEY AUTOINCREMENT, patient_id INTEGER NOT NULL, date TEXT NOT NULL, start_time TEXT NOT NULL, end_time TEXT NOT NULL, reason TEXT, status TEXT NOT NULL, notes TEXT, FOREIGN KEY(patient_id) REFERENCES patient(id));
+CREATE TABLE audit_log (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, action TEXT NOT NULL, entity TEXT NOT NULL, entity_id TEXT, created_at TEXT NOT NULL);
+CREATE INDEX patient_search ON patient(last_name, first_name, dni, phone);

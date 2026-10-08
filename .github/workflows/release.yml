@@ -1,0 +1,32 @@
+name: release
+on:
+  push:
+    tags: ['v*.*.*']
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Build frontend
+        working-directory: frontend
+        run: npm ci; npm run build
+      - name: Build backend
+        working-directory: backend
+        run: mvn -q package -DskipTests
+      - name: Build desktop installer
+        working-directory: desktop
+        run: |
+          npm ci
+          npm run dist
+      - name: Checksum
+        shell: pwsh
+        run: Get-FileHash desktop/dist/Molar-Setup.exe -Algorithm SHA256 | Select-Object -ExpandProperty Hash | Out-File desktop/dist/Molar-Setup.exe.sha256
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            desktop/dist/Molar-Setup.exe
+            desktop/dist/Molar-Setup.exe.sha256
