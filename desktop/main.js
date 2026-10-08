@@ -40,7 +40,7 @@ function createSplash() {
 function closeSplash() { if (splashWindow && !splashWindow.isDestroyed()) splashWindow.close(); }
 
 function createWindow() {
-  mainWindow = new BrowserWindow({ width: 1280, height: 800, show: false, fullscreen: false, autoHideMenuBar: true, webPreferences: { contextIsolation: true } });
+  mainWindow = new BrowserWindow({ icon: path.join(process.resourcesPath, 'molar.ico'), width: 1280, height: 800, show: false, fullscreen: false, autoHideMenuBar: true, webPreferences: { contextIsolation: true } });
   mainWindow.webContents.setWindowOpenHandler(({ url }) => { if (url.startsWith('https://wa.me/')) shell.openExternal(url); return { action: 'deny' }; });
   mainWindow.loadFile(path.join(process.resourcesPath, 'frontend', 'dist', 'index.html'), { query: { version: app.getVersion() } });
   mainWindow.once('ready-to-show', () => { mainWindow.maximize(); closeSplash(); mainWindow.show(); });

@@ -11,6 +11,7 @@
     "appId": "com.molar.desktop",
     "productName": "Molar",
     "artifactName": "Molar-Setup.exe",
+    "icon": "molar.ico",
     "generateUpdatesFilesForAllChannels": true,
     "publish": {
       "provider": "github",
@@ -18,10 +19,26 @@
       "repo": "molar"
     },
     "extraResources": [
-      { "from": "../backend/target/molar-backend-1.0.0.jar", "to": "molar-backend.jar" },
-      { "from": "../frontend/dist", "to": "frontend/dist" },
-      { "from": "jre", "to": "jre" },
-      { "from": "molar-logo.png", "to": "molar-logo.png" }
+      {
+        "from": "../backend/target/molar-backend-1.0.0.jar",
+        "to": "molar-backend.jar"
+      },
+      {
+        "from": "../frontend/dist",
+        "to": "frontend/dist"
+      },
+      {
+        "from": "jre",
+        "to": "jre"
+      },
+      {
+        "from": "molar.ico",
+        "to": "molar.ico"
+      },
+      {
+        "from": "molar-logo.png",
+        "to": "molar-logo.png"
+      }
     ]
   },
   "dependencies": {
