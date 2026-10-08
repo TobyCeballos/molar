@@ -30,8 +30,8 @@ async function waitForBackend() {
 function createSplash() {
   const logoFile = path.join(process.resourcesPath, 'molar-logo.png');
   const logoData = fs.existsSync(logoFile) ? fs.readFileSync(logoFile).toString('base64') : '';
-  splashWindow = new BrowserWindow({ width: 420, height: 260, show: false, frame: false, resizable: false, fullscreen: false, alwaysOnTop: true, backgroundColor: '#183b45', webPreferences: { contextIsolation: true } });
-  const splash = encodeURIComponent(`<!doctype html><html><head><meta charset="UTF-8"><style>*{box-sizing:border-box}body{margin:0;height:100vh;display:grid;place-items:center;background:#183b45;color:#fff;font-family:Segoe UI,Arial,sans-serif}.content{text-align:center}.logo{width:210px;height:105px;object-fit:cover;border-radius:10px;display:block;margin:0 auto 14px}.brand{font-size:28px;font-weight:800;letter-spacing:.22em}.message{margin-top:18px;color:#dce9e8;font-size:14px}.spinner{width:30px;height:30px;margin:20px auto 0;border:3px solid #ffffff45;border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}</style></head><body><div class="content"><img class="logo" src="data:image/png;base64,${logoData}" alt="Molar"><div class="brand">MOLAR</div><div class="message">Cargando tu espacio de trabajo…</div><div class="spinner"></div></div></body></html>`);
+  splashWindow = new BrowserWindow({ width: 420, height: 260, show: false, frame: false, resizable: false, fullscreen: false, alwaysOnTop: true, backgroundColor: '#0D1B33', webPreferences: { contextIsolation: true } });
+  const splash = encodeURIComponent(`<!doctype html><html><head><meta charset="UTF-8"><style>*{box-sizing:border-box}body{margin:0;height:100vh;display:grid;place-items:center;background:#0D1B33;color:#fff;font-family:Segoe UI,Arial,sans-serif}.content{text-align:center}.logo{width:210px;height:105px;object-fit:cover;border-radius:10px;display:block;margin:0 auto 14px}.brand{font-size:28px;font-weight:800;letter-spacing:.22em}.message{margin-top:18px;color:#dce9e8;font-size:14px}.spinner{width:30px;height:30px;margin:20px auto 0;border:3px solid #ffffff45;border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}</style></head><body><div class="content"><img class="logo" src="data:image/png;base64,${logoData}" alt="Molar"><div class="brand">MOLAR</div><div class="message">Cargando tu espacio de trabajo…</div><div class="spinner"></div></div></body></html>`);
   splashWindow.loadURL(`data:text/html;charset=utf-8,${splash}`);
   splashWindow.once('ready-to-show', () => splashWindow.show());
   splashWindow.on('closed', () => { splashWindow = null; });
@@ -52,10 +52,10 @@ function configureAutoUpdater() {
   const isBeta = app.getVersion().includes('-beta') || app.getVersion().includes('-alpha');
   if (isBeta) { autoUpdater.channel = app.getVersion().includes('-alpha') ? 'alpha' : 'beta'; autoUpdater.allowPrerelease = true; }
   autoUpdater.autoDownload = true;
-  autoUpdater.autoInstallOnAppQuit = false;
+  autoUpdater.autoInstallOnAppQuit = true;
   autoUpdater.on('error', error => fs.appendFileSync(path.join(logDir, 'updater.log'), `\n${new Date().toISOString()} ${error.stack || error.message}\n`));
   autoUpdater.on('update-downloaded', async () => {
-    const result = await dialog.showMessageBox({ type: 'info', title: 'Actualización lista', message: `Molar ${autoUpdater.currentVersion.version} descargó una actualización.`, detail: 'Reiniciá Molar para instalarla.', buttons: ['Reiniciar ahora', 'Más tarde'], defaultId: 0 });
+    const result = await dialog.showMessageBox({ type: 'info', title: 'Actualización lista', message: `Molar ${autoUpdater.currentVersion.version} descargó una actualización.`, detail: 'Podés reiniciar ahora o continuar trabajando. Si elegís “Más tarde”, se instalará automáticamente al cerrar Molar.', buttons: ['Reiniciar ahora', 'Más tarde'], defaultId: 0 });
     if (result.response === 0) autoUpdater.quitAndInstall();
   });
   autoUpdater.checkForUpdatesAndNotify();
