@@ -39,6 +39,20 @@ function createSplash() {
 
 function closeSplash() { if (splashWindow && !splashWindow.isDestroyed()) splashWindow.close(); }
 
+function storedLicenseEnvironment() {
+  try {
+    const licenseFile = path.join(molarRoot, 'data', 'license.json');
+    const license = JSON.parse(fs.readFileSync(licenseFile, 'utf8'));
+    return {
+      MOLAR_TENANT_ID: license.tenantId || '',
+      MOLAR_INSTALLATION_ID: license.installationId || '',
+      MOLAR_INSTALLATION_TOKEN: license.installationToken || ''
+    };
+  } catch (_) {
+    return {};
+  }
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({ icon: path.join(process.resourcesPath, 'molar.ico'), width: 1280, height: 800, show: false, fullscreen: false, autoHideMenuBar: true, webPreferences: { contextIsolation: true, preload: path.join(__dirname, 'preload.js') } });
   mainWindow.webContents.setWindowOpenHandler(({ url }) => { if (url.startsWith('https://wa.me/')) shell.openExternal(url); return { action: 'deny' }; });
@@ -80,7 +94,7 @@ else {
     const logPath = path.join(dataRoot, 'logs', 'backend.log');
     const logFd = fs.openSync(logPath, 'a');
     const java = path.join(process.resourcesPath, 'jre', 'bin', 'java.exe');
-    backend = spawn(java, ['-jar', path.join(process.resourcesPath, 'molar-backend.jar')], { windowsHide: true, stdio: ['ignore', logFd, logFd] });
+    backend = spawn(java, ['-jar', path.join(process.resourcesPath, 'molar-backend.jar')], { windowsHide: true, env: { ...process.env, ...storedLicenseEnvironment() }, stdio: ['ignore', logFd, logFd] });
     backend.on('error', error => fs.appendFileSync(logPath, `\n${new Date().toISOString()} ${error.stack}\n`));
     if (await waitForBackend()) { createWindow(); configureAutoUpdater(); }
     else { closeSplash(); await dialog.showMessageBox({ type: 'error', title: 'Molar no pudo iniciar', message: 'El backend no respondió. Revisá el log en %APPDATA%\\Molar\\logs\\backend.log.' }); app.quit(); }
