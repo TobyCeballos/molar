@@ -1,7 +1,11 @@
 name: release
 on:
   push:
-    tags: ['v*.*.*']
+    tags: ['v*']
+
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -17,16 +21,27 @@ jobs:
       - name: Build backend
         working-directory: backend
         run: mvn -q package -DskipTests
+      - name: Set desktop version from tag
+        working-directory: desktop
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart('v')
+          npm version $version --no-git-tag-version --allow-same-version
       - name: Build desktop installer
         working-directory: desktop
         run: |
           npm ci
-          npm run dist
+          npm run dist -- --publish never
       - name: Checksum
         shell: pwsh
         run: Get-FileHash desktop/dist/Molar-Setup.exe -Algorithm SHA256 | Select-Object -ExpandProperty Hash | Out-File desktop/dist/Molar-Setup.exe.sha256
       - uses: softprops/action-gh-release@v2
         with:
+          name: Molar ${{ github.ref_name }}
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          generate_release_notes: true
           files: |
             desktop/dist/Molar-Setup.exe
             desktop/dist/Molar-Setup.exe.sha256
+            desktop/dist/latest*.yml
+            desktop/dist/*.blockmap

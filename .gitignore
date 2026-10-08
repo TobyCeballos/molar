@@ -2,6 +2,7 @@ backend/target/
 frontend/node_modules/
 frontend/dist/
 desktop/node_modules/
+desktop/dist/
 /molar-control/
 *.db
 *.db-shm

@@ -1,1 +1,34 @@
-{"name":"molar-desktop","version":"1.0.0","private":true,"main":"main.js","scripts":{"start":"electron .","dist":"electron-builder --win"},"build":{"appId":"com.molar.desktop","productName":"Molar","artifactName":"Molar-Setup.exe","extraResources":[{"from":"../backend/target/molar-backend-1.0.0.jar","to":"molar-backend.jar"},{"from":"../frontend/dist","to":"frontend/dist"},{"from":"jre","to":"jre"},{"from":"molar-logo.png","to":"molar-logo.png"}]},"devDependencies":{"electron":"latest","electron-builder":"latest"}}
+{
+  "name": "molar-desktop",
+  "version": "1.0.0",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.molar.desktop",
+    "productName": "Molar",
+    "artifactName": "Molar-Setup.exe",
+    "generateUpdatesFilesForAllChannels": true,
+    "publish": {
+      "provider": "github",
+      "owner": "TobyCeballos",
+      "repo": "molar"
+    },
+    "extraResources": [
+      { "from": "../backend/target/molar-backend-1.0.0.jar", "to": "molar-backend.jar" },
+      { "from": "../frontend/dist", "to": "frontend/dist" },
+      { "from": "jre", "to": "jre" },
+      { "from": "molar-logo.png", "to": "molar-logo.png" }
+    ]
+  },
+  "dependencies": {
+    "electron-updater": "^6.6.2"
+  },
+  "devDependencies": {
+    "electron": "latest",
+    "electron-builder": "latest"
+  }
+}
