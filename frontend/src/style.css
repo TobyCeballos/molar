@@ -46,12 +46,12 @@
   transition:background .15s,transform .15s,box-shadow .15s!important;
 }
 .tooth:hover,.tooth:focus-visible{
-  background:#e9f6f4!important;
+  background:#EAF1FF!important;
   transform:translateY(-2px)!important;
   box-shadow:0 5px 14px #183b4524!important;
   outline:none;
 }
-.tooth:focus-visible{box-shadow:0 0 0 3px #8bd3ca,0 5px 14px #183b4524!important}
+.tooth:focus-visible{box-shadow:0 0 0 3px rgba(45,107,255,.28),0 5px 14px #183b4524!important}
 .tooth-face{
   width:52px;
   height:52px;
@@ -68,8 +68,8 @@
   max-width:76px;
   padding:3px 6px;
   border-radius:999px;
-  background:#e8f2f0;
-  color:#39706d;
+  background:#EAF1FF;
+  color:#2D6BFF;
   font-size:8px;
   line-height:1.1;
   white-space:nowrap;
@@ -77,7 +77,7 @@
   text-overflow:ellipsis;
 }
 .tooth.caries small{background:#fff0ee;color:#b53732}.tooth.restauracion small,.tooth.corona small{background:#fff5df;color:#98620c}
-.tooth.implante small,.tooth.endodoncia small,.tooth.protesis small{background:#e1f5f2;color:#167c7b}
+.tooth.implante small,.tooth.endodoncia small,.tooth.protesis small{background:#EAF1FF;color:#2D6BFF}
 .tooth.ausente small,.tooth.extraccion_indicada small{background:#edf0f1;color:#647277}.tooth.fractura small{background:#f0eaff;color:#7051bf}.tooth.sellador small{background:#e8f0ff;color:#2563eb}
 .tooth-grid::before,.tooth-grid::after{display:none!important}
 .odontogram-history{max-width:1100px;border:1px solid #e1eae9;border-radius:14px;box-shadow:0 5px 18px #183b450b}
@@ -216,7 +216,74 @@ header{margin-bottom:30px}header h1{font-size:32px;letter-spacing:-.03em;margin:
 .tooth-grid{border-color:var(--molar-border);background:linear-gradient(180deg,#fff 0%,#F3F7FF 100%);box-shadow:var(--molar-shadow)}
 .tooth:hover,.tooth:focus-visible{background:var(--molar-blue-soft)!important}.tooth strong{color:var(--molar-navy)}.tooth-zone.filled{background:var(--molar-primary);border-color:var(--molar-primary-dark)}.tooth-zone:hover{background:#6B9AFF!important;border-color:var(--molar-primary-dark)!important}
 .tooth small{background:var(--molar-blue-soft);color:var(--molar-primary)}
-.success{color:#126d4b;background:#EAF8F1;border-color:#BFE7D0}.error{border-color:#F4C7C3;background:#FFF3F1}
+.success{color:var(--molar-primary-dark);background:var(--molar-blue-soft);border-color:#BFD2FF}.error{border-color:#F4C7C3;background:#FFF3F1}
 .settings h2{font-size:25px}.settings-card h3{margin-top:0;color:var(--molar-navy)}
 .error-screen{background:linear-gradient(135deg,#F5F8FF 0%,#EAF1FF 100%)}
 @media(max-width:700px){aside{width:190px}.content{padding:25px 4%}.login .card{width:min(420px,calc(100vw - 32px))}}
+
+/* Ajustes finales de identidad: ningún estado funcional usa el verde heredado. */
+.card button{background:var(--molar-primary)}
+
+/* La vista diaria necesita mostrar el día completo y una agenda legible. */
+.calendar-grid.day .calendar-day{
+  min-height:520px;
+  padding:16px 20px 24px;
+  background:repeating-linear-gradient(to bottom,#fff 0,#fff 59px,#EDF2F8 60px);
+}
+.calendar-grid.day .calendar-day strong{
+  width:auto;
+  height:auto;
+  display:block;
+  padding:0 0 12px;
+  border-radius:0;
+  background:transparent;
+  color:var(--molar-navy);
+  font-size:16px;
+  font-weight:700;
+}
+.calendar-grid.day .appointment{
+  width:min(420px,100%);
+  min-height:58px;
+  padding:10px 14px;
+  border-radius:10px;
+  font-size:14px;
+  box-shadow:0 5px 14px rgba(13,27,51,.12);
+}
+.calendar-grid.day .appointment small{font-size:12px;color:#DCE7FF;margin-top:4px}
+.day-schedule{height:min(640px,calc(100vh - 260px));min-height:420px;overflow-y:auto;border-top:1px solid var(--molar-border);background:#fff;scroll-behavior:smooth}
+.day-slot{display:grid;grid-template-columns:78px 1fr;min-height:64px;border-bottom:1px solid #EDF2F8}
+.day-slot time{padding:12px 14px;color:var(--molar-muted);font-size:12px;font-weight:700;text-align:right;border-right:1px solid var(--molar-border)}
+.day-slot-content{padding:7px 14px;display:flex;align-items:center;gap:8px}
+.day-slot .appointment{width:min(460px,100%);margin:0;padding:9px 12px;text-align:left}
+.day-slot .appointment strong{display:block;color:#fff;font-size:13px}
+.day-slot .appointment small{display:block;color:#DCE7FF;font-size:12px;margin-top:3px}
+.appointment-info em{font-style:normal;font-weight:700}.appointment-status.pending{color:#98620c}.appointment-status.confirmed{color:var(--molar-primary)}.appointment-status.attended{color:#39706d}.appointment-status.cancelled{color:#b53732}.appointment-status.absent{color:var(--molar-muted)}
+.appointment-actions{flex-wrap:wrap}.appointment-actions .danger-action{background:#b53732}.appointment-actions .muted-action{background:#667085}.appointment-actions button{padding:8px 10px;font-size:12px}
+.appointment-list-toolbar{display:flex;justify-content:flex-end;margin:0 0 10px}.appointment-list-toolbar label{display:flex;align-items:center;gap:8px;color:var(--molar-muted);font-size:13px;font-weight:600}.appointment-list-toolbar select{padding:8px 28px 8px 10px;border:1px solid var(--molar-border);border-radius:8px;background:#fff;color:var(--molar-charcoal)}
+.vacancy-offer{display:flex;align-items:center;gap:16px;margin-bottom:16px;padding:14px 16px;background:#fff;border:1px solid #BFD2FF;border-left:4px solid var(--molar-primary);border-radius:12px;box-shadow:var(--molar-shadow)}.vacancy-offer>div:first-child{display:grid;gap:4px;min-width:220px}.vacancy-offer span{color:var(--molar-muted);font-size:13px}.vacancy-candidates{display:flex;flex-wrap:wrap;gap:8px;flex:1}.vacancy-candidates button{padding:8px 10px;text-align:left;font-size:12px}.vacancy-candidates small{display:block;color:#DCE7FF;margin-top:3px}.vacancy-close{background:transparent!important;color:var(--molar-muted)!important;box-shadow:none!important;transform:none!important}
+@media(max-width:700px){.vacancy-offer{align-items:stretch;flex-direction:column}.vacancy-candidates{flex-direction:column}.vacancy-candidates button{width:100%}}
+ .pagination{position:fixed;left:248px;right:0;bottom:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 6%;background:#F7F9FC;border-top:1px solid var(--molar-border);color:var(--molar-muted);font-size:13px}.pagination>div{display:flex;gap:6px;align-items:center}.pagination button{padding:8px 11px;background:#fff;color:var(--molar-primary);border:1px solid var(--molar-primary);border-radius:8px}.pagination button.active{background:var(--molar-primary);color:#fff;border-color:var(--molar-primary)}.pagination button:hover:not(:disabled){background:var(--molar-primary-dark);color:#fff}.pagination button:disabled{cursor:not-allowed;opacity:.45}@media (max-width:700px){.pagination{left:190px;padding:12px 4%}.pagination{align-items:flex-start;flex-direction:column}.pagination>div{flex-wrap:wrap}}
+/* Contenedores unificados según el estilo visual de Molar */
+.list,.settings-card,.history-list article,.patient-summary,.history-form,.tooth-form{background:#fff;border:1px solid var(--molar-border);border-radius:16px;box-shadow:var(--molar-shadow)}
+.toolbar input,.history-search input{background:#fff;border:1px solid var(--molar-border);border-radius:10px}
+.settings{width:100%;max-width:none}.settings-card{width:100%;max-width:none}.user-row{margin:10px 0;padding:16px 18px;border:1px solid var(--molar-border);border-radius:14px;background:#fff;box-shadow:0 6px 18px rgba(13,27,51,.06)}.settings-card .user-row:first-of-type{margin-top:8px}
+.patient-list{display:grid;gap:12px;margin-top:22px;background:transparent;box-shadow:none;border:0;overflow:visible}.patient-row{margin:0;background:#fff;border:1px solid var(--molar-border);border-radius:16px;box-shadow:var(--molar-shadow)}.patient-row:last-child{border-bottom:1px solid var(--molar-border)}
+.settings-nav{display:flex;gap:10px;margin:0 0 22px}.settings-nav button{padding:11px 18px;background:#fff;color:var(--molar-primary);border:1px solid var(--molar-border);border-radius:10px}.settings-nav button.active{background:var(--molar-primary);border-color:var(--molar-primary);color:#fff}.settings-nav button:hover{background:var(--molar-primary);color:#fff}
+.modal-backdrop{position:fixed;top:0;left:248px;right:0;width:auto;height:100vh;z-index:100;display:grid;place-items:center;padding:24px;box-sizing:border-box;background:rgba(13,27,51,.48);backdrop-filter:blur(2px)}.modal-card{width:min(560px,calc(100% - 48px));max-height:calc(100vh - 48px);overflow:auto;margin:0;padding:30px;background:#fff;border:1px solid var(--molar-border);border-radius:18px;box-shadow:0 24px 70px rgba(13,27,51,.25)}.modal-card h2{margin-top:0}.modal-card p{color:var(--molar-muted)}
+@media(max-width:680px){.modal-backdrop{left:0;top:145px}}
+.content:has(.modal-backdrop){overflow:visible}
+.layout:has(.modal-backdrop){overflow:visible}
+body:has(.modal-backdrop){overflow:hidden}
+.message-template{display:grid;gap:7px;margin:14px 0;color:var(--molar-navy);font-weight:600;font-size:13px}.message-template textarea{min-height:78px;width:100%;padding:10px;border:1px solid var(--molar-border);border-radius:8px;resize:vertical;font:inherit}.appointment-professional{display:grid;gap:7px;margin:14px 0;color:var(--molar-navy);font-weight:600;font-size:13px}.appointment-professional select{width:100%;padding:10px;border:1px solid var(--molar-border);border-radius:8px;font:inherit}
+.appointment-modal-actions{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0;padding:14px 0;border-top:1px solid var(--molar-border);border-bottom:1px solid var(--molar-border)}.appointment-modal-actions button{padding:9px 12px;font-size:12px}.appointment-modal-actions .danger-action{background:#b53732}.appointment-modal-actions .muted-action{background:#667085}.appointment-modal-actions .attend-button{background:#39706d}
+.cancel-reason{display:grid;gap:10px;margin:16px 0;padding:14px;background:#fff7f6;border:1px solid #f0c7c2;border-radius:12px}.cancel-reason label{display:grid;gap:7px;color:#8f302b;font-weight:600;font-size:13px}.cancel-reason textarea{min-height:78px;width:100%;padding:10px;border:1px solid #e6b8b3;border-radius:8px;resize:vertical;font:inherit}.cancel-reason button{width:max-content}
+.appointment-modal-actions label{display:flex;align-items:center;gap:10px;color:var(--molar-navy);font-weight:700;font-size:13px}.appointment-modal-actions select{min-width:170px;padding:9px 12px;border:1px solid var(--molar-border);border-radius:8px;background:#fff;font:inherit}.vacancy-modal{width:min(680px,calc(100vw - 32px))}.vacancy-modal h2{margin-top:0}.vacancy-modal-list{display:grid;gap:10px;margin:18px 0}.vacancy-modal-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-top:1px solid var(--molar-border)}.vacancy-modal-row div{display:grid;gap:4px}.vacancy-modal-row small{color:var(--molar-muted)}.vacancy-modal-row button{white-space:nowrap}
+.appointment.appointment-confirmed{background:var(--molar-primary);color:#fff}
+.appointment.appointment-pending{background:#9cc7ff;color:var(--molar-navy)}
+.appointment.appointment-pending strong{color:var(--molar-navy)}
+.appointment.appointment-pending small{color:#24518f}
+.appointment.appointment-confirmed small{color:#dce7ff}
+.appointment-status.pending{color:#5b9fef}
+.appointment-status.confirmed{color:var(--molar-primary)}
+.appointment-row:has(.appointment-status.confirmed){border-left:4px solid var(--molar-primary)}
+.appointment-row:has(.appointment-status.pending){border-left:4px solid #9cc7ff}
