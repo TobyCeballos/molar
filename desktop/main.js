@@ -10,6 +10,7 @@ let logDir;
 let mainWindow;
 let splashWindow;
 let updateDownloaded = false;
+let updaterState = { status: 'current', message: 'Molar está actualizado.', currentVersion: app.getVersion(), availableVersion: null };
 
 const molarRoot = process.env.APPDATA ? path.join(process.env.APPDATA, 'Molar') : path.join(app.getPath('userData'), 'Molar');
 fs.mkdirSync(path.join(molarRoot, 'desktop'), { recursive: true });
@@ -62,7 +63,7 @@ function createWindow() {
   mainWindow.on('closed', () => { mainWindow = null; });
 }
 
-function sendUpdaterStatus(status, message, progress, version) { if (mainWindow && !mainWindow.isDestroyed() && mainWindow.webContents) mainWindow.webContents.send('updater-status', { status, message, progress, currentVersion: app.getVersion(), availableVersion: version || null }); }
+function sendUpdaterStatus(status, message, progress, version) { updaterState = { status, message, progress, currentVersion: app.getVersion(), availableVersion: version || updaterState.availableVersion || null }; if (mainWindow && !mainWindow.isDestroyed() && mainWindow.webContents) mainWindow.webContents.send('updater-status', updaterState); }
 
 function configureAutoUpdater() {
   if (!app.isPackaged) return;
@@ -76,7 +77,8 @@ function configureAutoUpdater() {
   mainWindow.webContents.on('did-finish-load', () => sendUpdaterStatus('checking', 'Buscando actualizaciones…'));
   autoUpdater.autoInstallOnAppQuit = true;
   autoUpdater.on('error', error => { sendUpdaterStatus('error', 'No se pudo verificar la actualización. Molar seguirá funcionando.'); fs.appendFileSync(path.join(logDir, 'updater.log'), `\n${new Date().toISOString()} ${error.stack || error.message}\n`); });
-  autoUpdater.on('update-downloaded', info => { updateDownloaded = true; sendUpdaterStatus('ready', `Molar ${info.version} está listo para instalar.`, 100, info.version); });
+  autoUpdater.on('update-downloaded', info => { updateDownloaded = true; sendUpdaterStatus('ready', `Molar ${info.version} está listo para instalar.`, 100, info.version); dialog.showMessageBox(mainWindow, { type: 'info', title: 'Actualización lista', message: `Molar ${info.version} está listo para instalar.`, detail: 'Podés instalarla ahora o hacerlo al cerrar la aplicación.', buttons: ['Instalar ahora', 'Más tarde'], defaultId: 0, cancelId: 1 }).then(result => { if (result.response === 0 && updateDownloaded) autoUpdater.quitAndInstall(); }); });
+  ipcMain.handle('updater:status', () => updaterState);
   ipcMain.handle('updater:check', async () => { if (!app.isPackaged) return { status: 'development', message: 'Actualizaciones disponibles en la versión instalada.' }; try { await autoUpdater.checkForUpdates(); return { status: updateDownloaded ? 'ready' : 'checking' }; } catch (_) { return { status: 'error', message: 'No se pudo verificar la actualización.' }; } });
   ipcMain.handle('updater:install', () => { if (updateDownloaded) autoUpdater.quitAndInstall(); return updateDownloaded; });
   setInterval(() => { if (!updateDownloaded) autoUpdater.checkForUpdates().catch(() => {}); }, 10 * 60 * 1000);
